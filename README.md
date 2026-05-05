@@ -17,3 +17,4 @@ python -m alembic revision --autogenerate -m
 # aplicar a migrations 
 
 python -m alembic upgrade head 
+
