@@ -5,6 +5,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <style>
+        /* Estilização mantendo a estrutura original */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            color: #1c1e21;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 320px;
+            line-height: 1.8;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 15px 0;
+            display: block;
+            border: 1px solid #dddfe2;
+            border-radius: 6px;
+            box-sizing: border-box; /* Garante que o padding não aumente o tamanho do input */
+            font-size: 14px;
+        }
+
+        input:focus {
+            border-color: #1877f2;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+        }
+
+        button {
+            width: 100%;
+            background-color: #1877f2;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #166fe5;
+        }
+
+        p {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #606770;
+        }
+
+        a {
+            color: #1877f2;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 
 <body>
@@ -19,7 +97,7 @@
         
         {% if erro %}
             <p style="color: red">{{erro}}</p>
-            {% endif %}
+        {% endif %}
 
 
         <button type="submit"> Entrar</button>
@@ -28,8 +106,5 @@
     <p>Não tem uma conta? <a href="/auth/cadastro">Cadastre-se</a>
     </p>
 
-
-
-    
 </body>
 </html>
