@@ -100,5 +100,5 @@ def get_usuario_opcional(request: Request):
 
     try:
         return get_usuario_logado( request)
-    except get_usuario_logado(request)
+    except HTTPException:
         return None
