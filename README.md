@@ -18,3 +18,6 @@ python -m alembic revision --autogenerate -m
 
 python -m alembic upgrade head 
 
+# Rodar a migration 
+bash
+python -m uvicorn app.main:app --reload --port 5500

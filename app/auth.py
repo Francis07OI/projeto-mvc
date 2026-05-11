@@ -5,7 +5,7 @@
 
 from datetime import datetime, timedelta, timezone
 from jose import JWTError, jwt
-from passlib.context import  Request , CryptContext, status
+from passlib.context import CryptContext
 from fastapi import requests, HTTPException, status
 from dotenv import load_dotenv
 import os 
@@ -50,7 +50,7 @@ def verificar_senha (senha: str, senha_hash: str):
     return pwd_context.verify(senha, senha_hash)
 
 
-# funções do token - JWT
+# Funções do token - JWT
 
 def criar_token(data: dict):
     payload = data.copy()
@@ -71,21 +71,34 @@ def decodificar_token(token: str):
 #Dependencias do FastAPI
 def get_usuario_logado(request: Request):
      
-     token = request.cookies.get("acess_token")
-if not token:
-    raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="não autenticado"
+    token = request.cookies.get("acess_token")
 
-    )
-
-try:
-    payload = decodificar_token(token)
-    email = payload.get("sub")
-    if email is None:
+    if not token:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED
-            detail="token invalido ou expirado"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="não autenticado"
+
         )
 
+    try:
+        payload = decodificar_token(token)
+        email = payload.get("sub")
 
+        if email is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="token invalido ou expirado"
+            )
+        return payload
+    except JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Não autenticado"
+        )
+
+def get_usuario_opcional(request: Request):
+
+    try:
+        return get_usuario_logado( request)
+    except get_usuario_logado(request)
+        return None
