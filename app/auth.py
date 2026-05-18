@@ -1,104 +1,96 @@
-# 1. Hast e verificação de senhas com bcrypt
-# 2. Geração de token JWT
-# 3. Leitura e validação de token vindo do cookie
-
+#1. Hash e verificação de senhas com bcrypt
+#2. Geração e validação de tokens JWT
+#3. Leitura e validação de cookies para autenticação
 
 from datetime import datetime, timedelta, timezone
-from jose import JWTError, jwt
+from jose import jwt, JWTError
 from passlib.context import CryptContext
-from fastapi import Request, HTTPException, status
+from fastapi import HTTPException, status, Request
 from dotenv import load_dotenv
-import os 
-
+import os       
 
 load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
-
 ALGORITHM = os.getenv("ALGORITHM")
-
-ACESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACESS_TOKEN_EXPIRE_MINUTES")
-
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 
-#CryptContext - configura o bcrypt como algoritimo de hash
-
+#CryptContext - Configura o bcrypt como o algoritmo de hashing para senhas
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-#teste de hash
-
+#Teste de hash
 senha = "1234"
 senha_hash = pwd_context.hash(senha)
+print(f"Hash: {senha_hash}")
 
-print(senha_hash)
-
-
-verificar_senha = pwd_context.hash(senha)
-
-print(senha_hash)
-
-senha_atual = "testeteste"
+senha_atual = "1234"
 verificar_senha = pwd_context.verify(senha_atual, senha_hash)
 print(verificar_senha)
 
-
-# função de senha 
+# Funçôes de senha
 def hash_senha(senha: str):
     return pwd_context.hash(senha)
-  
-def verificar_senha (senha: str, senha_hash: str):
+
+
+def verificar_senha(senha: str, senha_hash: str):
     return pwd_context.verify(senha, senha_hash)
 
 
-# Funções do token - JWT
-
+# Funções de token - JWT
 def criar_token(data: dict):
     payload = data.copy()
-
-    #Define quando o token vai inspirar
-    expira = datetime.now(timezone.utc) + timedelta(minutes=int(ACESS_TOKEN_EXPIRE_MINUTES))
+    # Define o tempo de expiração do token
+    expira = datetime.now(timezone.utc) + timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
     payload.update({"exp": expira})
-
-    #Criar o token jwt 
+    # Gera o token JWT
     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
-    return token 
+    return token
+
 
 def decodificar_token(token: str):
     payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-    return payload 
-
-
-#Dependencias do FastAPI
+    return payload
+    
+# Dependencias do FastAPI
 def get_usuario_logado(request: Request):
-     
-    token = request.cookies.get("acess_token")
+    
+    token = request.cookies.get("access_token")
 
     if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="não autenticado"
-
+            detail="Não Autenticado"
         )
 
     try:
         payload = decodificar_token(token)
         email = payload.get("sub")
-
         if email is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="token invalido ou expirado"
+                detail="Token inválido"
             )
         return payload
     except JWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token invalido ou expirado"
+            detail="Token inválido o expirado"
         )
-
+    
 def get_usuario_opcional(request: Request):
-
     try:
         return get_usuario_logado(request)
     except HTTPException:
-        return None
+            return None
+     
+# Quando o usuario é Administrador
+def get_admin(request: Request):
+    usuario = get_usuario_logado(request)
+
+    if usuario.get("role") != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Acesso apenas para administradores"
+        )
+    return usuario

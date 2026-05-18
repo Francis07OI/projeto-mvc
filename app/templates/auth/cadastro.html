@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="pt-br ">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro</title>
     <style>
-        /* Estilização moderna mantendo a estrutura original */
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
             background-color: #f4f7f9;
@@ -30,7 +29,7 @@
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             width: 300px;
-            line-height: 2; /* Espaçamento entre as linhas de texto e inputs */
+            line-height: 2;
         }
 
         input {
@@ -40,7 +39,7 @@
             display: inline-block;
             border: 1px solid #ccc;
             border-radius: 4px;
-            box-sizing: border-box; /* Garante que o padding não quebre a largura */
+            box-sizing: border-box;
         }
 
         input:focus {
@@ -91,16 +90,15 @@
         <br>
         Senha: <input type="password" name="senha_hash">
         <br>
-        
+
         {% if erro %}
             <p style="color: red">{{erro}}</p>
         {% endif %}
 
-        <button type="submit"> Cadastrar</button>
+        <button type="submit">Cadastrar</button>
     </form>
 
-    <p>já tem uma conta? <a href="/auth/login">Entrar</a>
-    </p>
+    <p>Já tem uma conta? <a href="/auth/login">Entrar</a></p>
 
 </body>
 
