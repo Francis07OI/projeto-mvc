@@ -87,6 +87,9 @@
 
 <body>
     <h1>Entrar no Sistema</h1>
+    {% id request.query_params.get ("cadastro") == "ok"%}
+    <p style="color: green">cadastro realizado com sucesso Faça login. </p>
+    {%endif%}
 
     <form action="/auth/cadastro" method="post">
 
